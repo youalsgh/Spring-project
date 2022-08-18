@@ -1,3 +1,6 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="command.ProductCommand"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -19,6 +22,17 @@
     <!-- Load fonts style after rendering the layout styles -->
 	<link rel="stylesheet" href="<c:url value='https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap'/>">
 	<link rel="stylesheet" href="<c:url value='/resources/css/fontawesome.min.css'/>">
+	
+	<%
+		@SuppressWarnings("unchecked")
+		List<ProductCommand> productList = (ArrayList<ProductCommand>)request.getAttribute("productList");
+		int count1 = (int)request.getAttribute("count1");
+		int count2 = (int)request.getAttribute("count2");
+		int count3 = (int)request.getAttribute("count3");
+		productList.get(0).setReplyCount(count1);
+		productList.get(1).setReplyCount(count2);
+		productList.get(2).setReplyCount(count3);
+	%>
 	
 	<c:if test='${result == 1}'>
 		<script type="text/javascript">
@@ -79,19 +93,19 @@
         </div>
         <div class="row">
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="<c:url value='/resources/img/category_img_01.jpg'/>" class="rounded-circle img-fluid border"></a>
-                <h5 class="text-center mt-3 mb-3">Watches</h5>
-                <p class="text-center"><a class="btn btn-success">Go Shop</a></p>
+                <a href="#"><img src="<c:url value='/resources/img/man_tshirt1.jpg'/>" class="rounded-circle img-fluid border"></a>
+                <h5 class="text-center mt-3 mb-3">Top</h5>
+                <p class="text-center"><a class="btn btn-success" href='<c:url value="/main/main_shop?pageNum=1"/>'>Go Shop</a></p>
             </div>
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="<c:url value='/resources/img/category_img_02.jpg'/>" class="rounded-circle img-fluid border"></a>
-                <h2 class="h5 text-center mt-3 mb-3">Shoes</h2>
-                <p class="text-center"><a class="btn btn-success">Go Shop</a></p>
+                <a href="#"><img src="<c:url value='/resources/img/man_pants1.jpg'/>" class="rounded-circle img-fluid border"></a>
+                <h2 class="h5 text-center mt-3 mb-3">Bottom</h2>
+                <p class="text-center"><a class="btn btn-success" href='<c:url value="/main/main_shop?pageNum=1"/>'>Go Shop</a></p>
             </div>
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="<c:url value='/resources/img/category_img_03.jpg'/>" class="rounded-circle img-fluid border"></a>
+                <a href="#"><img src="<c:url value='/resources/img/shoes1.jpg'/>" class="rounded-circle img-fluid border"></a>
                 <h2 class="h5 text-center mt-3 mb-3">Accessories</h2>
-                <p class="text-center"><a class="btn btn-success">Go Shop</a></p>
+                <p class="text-center"><a class="btn btn-success" href='<c:url value="/main/main_shop?pageNum=1"/>'>Go Shop</a></p>
             </div>
         </div>
     </section>
@@ -109,78 +123,47 @@
                 </div>
             </div>
             <div class="row">
+             	<%
+             		for(int i = 0 ; i < productList.size() ; i++){
+             			ProductCommand product = productList.get(i);
+             	%>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="card h-100">
-                        <a href="<c:url value="shop-single"/>">
-                            <img src="<c:url value='/resources/img/feature_prod_01.jpg'/>" class="card-img-top" alt="...">
+                        <a href="<c:url value='/main/main_shopDetail?productId='/><%=product.getId() %>&productBrand=<%=product.getBrand()%>">
+                            <img src="<c:url value='/resources/img/'/><%=product.getFileName()%>" class="card-img-top">
                         </a>
                         <div class="card-body">
                             <ul class="list-unstyled d-flex justify-content-between">
                                 <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
+                                    <%	
+	                            		for(int j = 0 ; j < (int)product.getRatingAvg() ; j++){
+	                            	%>
+	                                	<i class="fa fa-star text-warning"></i>
+	                                <%
+	                            		}
+	                            		for(int j = (int)product.getRatingAvg() ; j < 5 ; j++){
+	                                %>
+	                                	<i class="fa fa-star text-secondary"></i>
+	                                <%
+	                            		}
+	                                %>
                                 </li>
-                                <li class="text-muted text-right">$240.00</li>
+                                <li class="text-muted text-right">
+                                	<% String price = String.format("%,d", product.getPrice()); %>
+									<%=price%>원
+                                </li>
                             </ul>
-                            <a href="<c:url value="shop-single"/>" class="h2 text-decoration-none text-dark">Gym Weight</a>
+                            <a href="<c:url value='/main/main_shopDetail?productId='/><%=product.getId() %>&productBrand=<%=product.getBrand()%>" class="h2 text-decoration-none text-dark"><%=product.getName()%></a>
                             <p class="card-text">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt in culpa qui officia deserunt.
+                            	<%=product.getDescription()%>
                             </p>
-                            <p class="text-muted">Reviews (24)</p>
+                            <p class="text-muted">Reviews <%=product.getReplyCount()%></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-4">
-                    <div class="card h-100">
-                        <a href="<c:url value="shop-single"/>">
-                            <img src="<c:url value='/resources/img/feature_prod_02.jpg'/>" class="card-img-top" alt="...">
-                        </a>
-                        <div class="card-body">
-                            <ul class="list-unstyled d-flex justify-content-between">
-                                <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                </li>
-                                <li class="text-muted text-right">$480.00</li>
-                            </ul>
-                            <a href="<c:url value="shop-single"/>" class="h2 text-decoration-none text-dark">Cloud Nike Shoes</a>
-                            <p class="card-text">
-                                Aenean gravida dignissim finibus. Nullam ipsum diam, posuere vitae pharetra sed, commodo ullamcorper.
-                            </p>
-                            <p class="text-muted">Reviews (48)</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 mb-4">
-                    <div class="card h-100">
-                        <a href="<c:url value="shop-single"/>">
-                            <img src="<c:url value='/resources/img/feature_prod_03.jpg'/>" class="card-img-top" alt="...">
-                        </a>
-                        <div class="card-body">
-                            <ul class="list-unstyled d-flex justify-content-between">
-                                <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                </li>
-                                <li class="text-muted text-right">$360.00</li>
-                            </ul>
-                            <a href="<c:url value="shop-single"/>" class="h2 text-decoration-none text-dark">Summer Addides Shoes</a>
-                            <p class="card-text">
-                                Curabitur ac mi sit amet diam luctus porta. Phasellus pulvinar sagittis diam, et scelerisque ipsum lobortis nec.
-                            </p>
-                            <p class="text-muted">Reviews (74)</p>
-                        </div>
-                    </div>
-                </div>
+                <%
+             		}
+                %>
             </div>
         </div>
     </section>

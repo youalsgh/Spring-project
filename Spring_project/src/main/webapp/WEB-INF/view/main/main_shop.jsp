@@ -52,8 +52,8 @@
 							class="fa fa-fw fa-chevron-circle-down mt-1"></i>
 					</a>
 						<ul class="collapse show list-unstyled pl-3">
-							<li><a class="text-decoration-none" href="#">Men</a></li>
-							<li><a class="text-decoration-none" href="#">Women</a></li>
+							<li><a class="text-decoration-none" href="<c:url value='/main/main_shop?pageNum=1'/>&filter=man">Men</a></li>
+							<li><a class="text-decoration-none" href="<c:url value='/main/main_shop?pageNum=1'/>&filter=woman">Women</a></li>
 						</ul></li>
 					<li class="pb-3"><a
 						class="collapsed d-flex justify-content-between h3 text-decoration-none"
@@ -82,21 +82,22 @@
 					<div class="col-md-6">
 						<ul class="list-inline shop-top-menu pb-3 pt-1">
 							<li class="list-inline-item"><a
-								class="h3 text-dark text-decoration-none mr-3" href="#">All</a>
+								class="h3 text-dark text-decoration-none mr-3" href="<c:url value='/main/main_shop?pageNum=1'/>&filter=all">All</a>
 							</li>
 							<li class="list-inline-item"><a
-								class="h3 text-dark text-decoration-none mr-3" href="#">Men's</a>
+								class="h3 text-dark text-decoration-none mr-3" href="<c:url value='/main/main_shop?pageNum=1'/>&filter=man">Men's</a>
 							</li>
 							<li class="list-inline-item"><a
-								class="h3 text-dark text-decoration-none" href="#">Women's</a></li>
+								class="h3 text-dark text-decoration-none" href="<c:url value='/main/main_shop?pageNum=1'/>&filter=woman">Women's</a></li>
 						</ul>
 					</div>
 					<div class="col-md-6 pb-4">
 						<div class="d-flex">
-							<select class="form-control">
-								<option>Featured</option>
-								<option>A to Z</option>
-								<option>Item</option>
+							<select class="form-control" id="filter" name="filter">
+								<option value="new" ${filter == 'new' ? 'selected ="selected"' : ''}>최신 상품 순</option>
+								<option value="highPrice" ${filter == 'highPrice' ? 'selected ="selected"' : ''}>높은 가격 순</option>
+								<option value="rowPrice" ${filter == 'rowPrice' ? 'selected ="selected"' : ''}>낮은 가격 순</option>
+								<option value="highRating" ${filter == 'highRating' ? 'selected ="selected"' : ''}>높은 평점 순</option>
 							</select>
 						</div>
 					</div>
@@ -179,7 +180,7 @@
 									end="${pageMaker.endPage}">
 									<li class="page-item"><a
 										class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark ${pageMaker.cri.pageNum == num ? "
-										active" : ""}" href='<c:url value="/main/main_shop?pageNum=${num}"/>'>${num}</a>
+										active" : ""}" href='<c:url value="/main/main_shop?pageNum=${num}"/>&filter=${filter}'>${num}</a>
 									</li>
 								</c:forEach>
 
@@ -203,46 +204,25 @@
 	<jsp:include page="../include/footer.jsp" />
 
 	<script>
-		$(document).ready(function(){
-			$(".btn_cart").click(function(){
-				location.href="/cart/add?memberId=${memberId}&productId=${product.id}";
-			});
-		});
-	
-		/* 서버로 전송할 데이터 */
-		const form = {
-				memberId : '${memberId}',
-				productId : '${product.id}',
-				productCount : 1
-		}
-		
-		/* 장바구니 추가 버튼 */
-		$(".btn_cart").on("click", function(){
-			$.ajax({
-				url : 'cart/add',
-				type : 'POST',
-				data : form,
-				dataType : "text",
-				success: function(result){
-					cartAlert(result);
-				},
-				error: function(){
-	                alert("simpleWithObject err");
-	            }
+		$(document).ready(function(){			
+			$('select[name=filter]').change(function(){
+				if($(this).val() == "highPrice"){
+					$('#filter')
+					var filter = $(this).val()
+					location.href = 'main_shop?pageNum=1&filter=' + filter;
+				} else if($(this).val() == "rowPrice"){
+					var filter = $(this).val()
+					location.href = 'main_shop?pageNum=1&filter=' + filter;
+				} else if($(this).val() == "highRating"){
+					var filter = $(this).val()
+					location.href = 'main_shop?pageNum=1&filter=' + filter;
+				} else if($(this).val() == "new"){
+					var filter = $(this).val()
+					location.href = 'main_shop?pageNum=1&filter=' + filter;
+				}
 			});
 		});
 		
-		function cartAlert(result){
-			if(result == '0'){
-				alert("장바구니에 추가를 하지 못하였습니다.");
-			} else if(result == '1'){
-				alert("장바구니에 추가되었습니다.");
-			} else if(result == '2'){
-				alert("장바구니에 이미 추가되어져 있습니다.");
-			} else if(result == '5'){
-				alert("로그인이 필요합니다.");
-			}
-		}
 		
 	</script>
 	<!-- Start Script -->

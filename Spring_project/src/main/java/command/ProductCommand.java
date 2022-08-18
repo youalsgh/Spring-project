@@ -28,4 +28,7 @@ public class ProductCommand {
 	
 	/* 상품 평점 */
 	private double ratingAvg;
+	
+	/* 상품 리뷰 개수*/
+	private int replyCount;
 }

@@ -40,12 +40,18 @@ public class ProductController {
 	
 	/* 상품리스트 페이지 */
 	@GetMapping("/main_shop")
-	public void requestProductListGET(@RequestParam("pageNum")int pageNum, Criteria cri, Model model) throws Exception{
+	public void requestProductListGET(@RequestParam("pageNum") int pageNum, @RequestParam(required = false) String filter, Criteria cri, Model model) throws Exception{
 		cri.setPageNum(pageNum);
-		model.addAttribute("productList", productService.getProductList(cri));
-		int total = productService.getProductListCount();
+		
+		if(filter == null) {
+			filter = "new";
+		}
+		
+		model.addAttribute("productList", productService.getProductList(cri, filter));
+		int total = productService.getProductListCount(filter);
 		PageMaker pageMaker = new PageMaker(cri, total);
 		model.addAttribute("pageMaker", pageMaker);
+		model.addAttribute("filter", filter);
 	}
 	
 	/* 상품 상세페이지 */

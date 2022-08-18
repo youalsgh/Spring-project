@@ -45,8 +45,7 @@ public class ProductDAOImpl implements ProductDAO{
 	
 	/* 상품리스트 가져오기 */
 	@Override
-	public List<ProductCommand> getProductList(Criteria cri) throws Exception {
-		String sql = "select * from product order by p_id desc limit ?, ?";
+	public List<ProductCommand> getProductList(Criteria cri, String sql) throws Exception {
 		List<ProductCommand> results = jdbcTemplate.query(sql, productRowMapper, cri.getSkip(), cri.getAmount());
 		return results.isEmpty() ? null : results;
 		
@@ -54,8 +53,7 @@ public class ProductDAOImpl implements ProductDAO{
 
 	/* 상품리스트 개수 */
 	@Override
-	public int getProductListCount() throws Exception {
-		String sql = "select count(*) from product";
+	public int getProductListCount(String sql) throws Exception {
 		Integer listCount = jdbcTemplate.queryForObject(sql, Integer.class);
 		return listCount;
 	}
@@ -82,5 +80,22 @@ public class ProductDAOImpl implements ProductDAO{
 		List<ProductCommand> results = jdbcTemplate.query(sql, productRowMapper, productBrand);
 		return results.isEmpty() ? null : results;
 	}
+
+	/* 평점 높은 상품 3개 가져오기 */
+	@Override
+	public List<ProductCommand> getHighRatingProduct() throws Exception {
+		String sql = "select * from product order by p_ratingAvg desc limit 3";
+		List<ProductCommand> results = jdbcTemplate.query(sql, productRowMapper);
+		return results.isEmpty() ? null : results;
+	}
+
+	/* 상품 리뷰개수 */
+	@Override
+	public Integer getProductReviewCount(int productId) throws Exception {
+		String sql = "select count(*) from reply where r_productId = ?";
+		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, productId);
+		return count;
+	}
+	
 	
 }
